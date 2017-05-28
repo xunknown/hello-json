@@ -1,0 +1,42 @@
+// 系统配置文件
+{
+// "unknown:":"unknown"
+// "name":"name"
+"active":true,
+// "mode":"DYNAMIC", // DYNAMIC, STATIC, DEFAULT
+"server1Config":{ /*服务器配置*/
+	"active":true,
+	"localPort":0,
+	"localIP":"",
+//	"mode":"STATIC",
+	"rate":0.9,
+	"count":3,
+	"serverPorts":[1000,0,0,990,0,0,0,0,0,0],
+	"serverIPs":["ip0",null,null,null,null,null,null,"127.0.0.1",null,null],
+	// 业务1配置
+	"service1Config":{
+		"active":false,
+		"mode":"DEFAULT",
+		"rate":0.7
+	}
+},
+// 服务器配置
+"server2Config":{
+	"active":false,
+	"rate":0.7,
+	"localIP":"",
+	"localPort":0,
+	"mode":"STATIC",
+	"service1Config":{
+		"active":false,
+		"mode":"DEFAULT",
+		"rate":0.7
+	},
+	"service2Config":{
+		"active":false,
+		"mode":"DEFAULT",
+		"rate":0.7
+	}
+}
+}
+

@@ -1,0 +1,21 @@
+// 系统配置文件
+{
+"unknown":"unknown",
+// "name":"name",
+"active":true,
+// "mode":"DYNAMIC", // DYNAMIC, STATIC, DEFAULT
+"server1Config":{ /*服务器配置*/
+	"serverPorts":[1,2,3],
+	"service1Config":{
+	"mode":"STATIC"
+	}
+},
+// 服务器配置
+"server2Config":{
+	"rate":0.11111111111111111,
+	"service1Config":null,
+	"service2Config":{
+	}
+}
+}
+
