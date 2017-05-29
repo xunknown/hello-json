@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -47,10 +48,17 @@ public class GsonTest {
 
 	public static void main(String[] args) {
 		
-		Gson gson = new Gson();
+		//Gson gson = new Gson();
 
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();	
+		
 		Config config = new Config();
 		if (true) {
+			String prettyJson = gson.toJson(config);
+			LOGGER.info("prettyJson:\n{}", prettyJson);
+			String propertyFormat = JsonTool.propertyFormat(config);
+			LOGGER.info("propertyFormat:\n{}", propertyFormat);
+			
 			JsonTool.printJson(config);
 			config = JsonTool.mergeJson(config, "{active:true,mode:STATIC,server2Config:{rate:0.99999}}");
 			JsonTool.printJson(config);

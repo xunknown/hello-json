@@ -71,6 +71,56 @@ public class JsonTool {
 		}
 	}
 
+	public static String propertyFormat(Object object, Type type) {
+		return propertyFormat(new Gson().toJsonTree(object, type));
+	}
+
+	public static String propertyFormat(Object object) {
+		return propertyFormat(new Gson().toJsonTree(object));
+	}
+
+	public static String propertyFormat(String json) {
+		if (json != null) {
+			return propertyFormat(new JsonParser().parse(json));
+		}
+		return propertyFormat((JsonElement)null);
+	}
+
+	public static String propertyFormat(JsonElement jsonElement) {
+		return propertyFormat(null, jsonElement);
+	}
+
+	// format an object as property like
+	public static String propertyFormat(String property, JsonElement jsonElement) {
+		if (jsonElement == null || jsonElement.isJsonPrimitive() || jsonElement.isJsonNull()) {
+			if (property != null) {
+				return property + "=" + jsonElement + "\n";
+			} else {
+				return jsonElement + "\n";
+			}
+		} else if (jsonElement.isJsonObject()) {
+			String result = "";
+			JsonObject jsonObject = jsonElement.getAsJsonObject(); // never null?
+			Iterator<Entry<String, JsonElement>> jsonObjectIt = jsonObject.entrySet().iterator(); // never null?
+			while (jsonObjectIt.hasNext()) {
+				Entry<String, JsonElement> jsonEntry = jsonObjectIt.next();
+				String propertyFullName = property == null ? jsonEntry.getKey() : property + "." + jsonEntry.getKey();
+				result += propertyFormat(propertyFullName, jsonEntry.getValue());
+			}
+			return result;
+		} else if (jsonElement.isJsonArray()) {
+			String result = "";
+			JsonArray jsonArray = jsonElement.getAsJsonArray(); // never null?
+			int size = jsonArray.size();
+			for (int i = 0; i < size; i++) {
+				String propertyFullName = property == null ? "[" + i + "]" : property + "[" + i + "]";
+				result += propertyFormat(propertyFullName, jsonArray.get(i));
+			}
+			return result;
+		}
+		return null;
+	}
+
     // merge srcObject and srcJson to create a new object, return new object if success, otherwise null
 	@SuppressWarnings("unchecked")
 	public static <T> T mergeJson(Object srcObject, String srcJson) {
