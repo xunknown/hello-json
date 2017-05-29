@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,83 +16,86 @@ import com.google.gson.JsonParser;
 
 public class JsonTool {
     private static Logger LOGGER = LoggerFactory.getLogger(JsonTool.class);
-    
-	public static void printJson(Object object, Type type) {
-		printJson(new Gson().toJsonTree(object, type));
+	
+	// format an object as compact JSON format
+	public static String compactFormatJson(Object object, Type type) {
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(object, type);
 	}
 
-	public static void printJson(Object object) {
-		printJson(new Gson().toJsonTree(object));
+	// format an object as compact JSON format
+	public static String compactFormatJson(Object object) {
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(object);
 	}
 
-	public static void printJson(String json) {
+	// format an object as compact JSON format
+	public static String compactFormatJson(String json) {
 		if (json != null) {
-			printJson(new JsonParser().parse(json));
-		} else {
-			printJson((JsonElement)null);
+			Gson gson = new GsonBuilder().create();
+			return gson.toJson(new JsonParser().parse(json));
 		}
-	}
-
-	public static void printJson(JsonElement jsonElement) {
-		printJson(null, jsonElement);
+		return null;
 	}
 	
-	public static void printJson(String property, JsonElement jsonElement) {
-		if (jsonElement == null || jsonElement.isJsonPrimitive() || jsonElement.isJsonNull()) {
-			if (property != null) {
-				LOGGER.info("{}={}", property, jsonElement);
-			} else {
-				LOGGER.info("{}", jsonElement);
-			}
-		} else if (jsonElement.isJsonObject()) {
-			if (property != null) {
-				LOGGER.info("{}:{}", property, jsonElement);
-			} else {
-				LOGGER.info("{}", jsonElement);				
-			}
-			JsonObject jsonObject = jsonElement.getAsJsonObject(); // never null?
-			Iterator<Entry<String, JsonElement>> jsonObjectIt = jsonObject.entrySet().iterator(); // never null?
-			while (jsonObjectIt.hasNext()) {
-				Entry<String, JsonElement> jsonEntry = jsonObjectIt.next();
-				String propertyFullName = property == null ? jsonEntry.getKey() : property + "." + jsonEntry.getKey();
-				printJson(propertyFullName, jsonEntry.getValue());
-			}
-		} else if (jsonElement.isJsonArray()) {
-			if (property != null) {
-				LOGGER.info("{}:{}", property, jsonElement);
-			} else {
-				LOGGER.info("{}", jsonElement);				
-			}
-			JsonArray jsonArray = jsonElement.getAsJsonArray(); // never null?
-			int size = jsonArray.size();
-			for (int i = 0; i < size; i++) {
-				String propertyFullName = property == null ? "[" + i + "]" : property + "[" + i + "]";
-				printJson(propertyFullName, jsonArray.get(i));
-			}
-		}
+	// format an object as compact JSON format
+	public static String compactFormatJson(JsonElement jsonElement) {
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(jsonElement);
+	}
+	
+	// format an object as pretty JSON format
+	public static String prettyFormatJson(Object object, Type type) {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(object, type);
 	}
 
-	public static String propertyFormat(Object object, Type type) {
-		return propertyFormat(new Gson().toJsonTree(object, type));
+	// format an object as pretty JSON format
+	public static String prettyFormatJson(Object object) {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(object);
 	}
 
-	public static String propertyFormat(Object object) {
-		return propertyFormat(new Gson().toJsonTree(object));
-	}
-
-	public static String propertyFormat(String json) {
+	// format an object as pretty JSON format
+	public static String prettyFormatJson(String json) {
 		if (json != null) {
-			return propertyFormat(new JsonParser().parse(json));
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			return gson.toJson(new JsonParser().parse(json));
 		}
-		return propertyFormat((JsonElement)null);
+		return null;
 	}
 
-	public static String propertyFormat(JsonElement jsonElement) {
-		return propertyFormat(null, jsonElement);
+	// format an object as pretty JSON format
+	public static String prettyFormatJson(JsonElement jsonElement) {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(jsonElement);
+	}
+	
+	// format an object as property like
+	public static String propertyFormatJson(Object object, Type type) {
+		return propertyFormatJson(new Gson().toJsonTree(object, type));
 	}
 
 	// format an object as property like
-	public static String propertyFormat(String property, JsonElement jsonElement) {
+	public static String propertyFormatJson(Object object) {
+		return propertyFormatJson(new Gson().toJsonTree(object));
+	}
+
+	// format an object as property like
+	public static String propertyFormatJson(String json) {
+		if (json != null) {
+			return propertyFormatJson(new JsonParser().parse(json));
+		}
+		return propertyFormatJson((JsonElement)null);
+	}
+
+	// format an object as property like
+	public static String propertyFormatJson(JsonElement jsonElement) {
+		return propertyFormatJson(null, jsonElement);
+	}
+
+	// format an object as property like
+	public static String propertyFormatJson(String property, JsonElement jsonElement) {
 		if (jsonElement == null || jsonElement.isJsonPrimitive() || jsonElement.isJsonNull()) {
 			if (property != null) {
 				return property + "=" + jsonElement + "\n";
@@ -105,7 +109,7 @@ public class JsonTool {
 			while (jsonObjectIt.hasNext()) {
 				Entry<String, JsonElement> jsonEntry = jsonObjectIt.next();
 				String propertyFullName = property == null ? jsonEntry.getKey() : property + "." + jsonEntry.getKey();
-				result += propertyFormat(propertyFullName, jsonEntry.getValue());
+				result += propertyFormatJson(propertyFullName, jsonEntry.getValue());
 			}
 			return result;
 		} else if (jsonElement.isJsonArray()) {
@@ -114,7 +118,7 @@ public class JsonTool {
 			int size = jsonArray.size();
 			for (int i = 0; i < size; i++) {
 				String propertyFullName = property == null ? "[" + i + "]" : property + "[" + i + "]";
-				result += propertyFormat(propertyFullName, jsonArray.get(i));
+				result += propertyFormatJson(propertyFullName, jsonArray.get(i));
 			}
 			return result;
 		}

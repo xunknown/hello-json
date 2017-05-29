@@ -54,14 +54,20 @@ public class GsonTest {
 		
 		Config config = new Config();
 		if (true) {
-			String prettyJson = gson.toJson(config);
-			LOGGER.info("prettyJson:\n{}", prettyJson);
-			String propertyFormat = JsonTool.propertyFormat(config);
+			String compactFormat = JsonTool.compactFormatJson(config);
+			LOGGER.info("compactFormat:\n{}", compactFormat);
+			
+			String prettyFormat = JsonTool.prettyFormatJson(config);
+			LOGGER.info("prettyFormat:\n{}", prettyFormat);
+			
+			String propertyFormat = JsonTool.propertyFormatJson(config);
 			LOGGER.info("propertyFormat:\n{}", propertyFormat);
 			
-			JsonTool.printJson(config);
+			propertyFormat = JsonTool.propertyFormatJson(null, (JsonElement) null);
+			LOGGER.info("null JsonElement propertyFormat:\n{}", propertyFormat);	
+			
 			config = JsonTool.mergeJson(config, "{active:true,mode:STATIC,server2Config:{rate:0.99999}}");
-			JsonTool.printJson(config);
+			LOGGER.info("propertyFormat:\n{}", JsonTool.propertyFormatJson(config));
 
 			return ;
 		}
@@ -131,7 +137,8 @@ public class GsonTest {
 				JsonElement jsonElement = jsonParser.parse(sb.toString());
 				LOGGER.info("JsonParser:\n" + jsonElement.toString());
 				// printJsonString(sb.toString());
-				JsonTool.printJson(jsonElement);
+				LOGGER.info("\n{}", JsonTool.prettyFormatJson(jsonElement));
+
 			}
 			LOGGER.info("配置文件内容:\n" + sb.toString());
 			User user = gson.fromJson(sb.toString(), User.class);
