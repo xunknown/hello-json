@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +47,13 @@ public class GsonTest {
     private static Logger LOGGER = LoggerFactory.getLogger(GsonTest.class);
 
 	public static void main(String[] args) {
+		
+		try {
+			int i = 100/0;
+		} catch (Exception e) {
+			// TODO: handle exception
+			LOGGER.info("exception:\n{}", ExceptionUtils.getStackTrace(e));
+		}
 		
 		//Gson gson = new Gson();
 
